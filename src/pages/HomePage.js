@@ -5,11 +5,12 @@ import TagClould from '../components/TagCloud';
 
 const HomePage = () => {
   return (
-    <div>
+    <div className='w-screen min-h-screen p-10 dark:bg-slate-800 flex justify-evenly items-start'>
       <RecentlyReviews />
       <TopReviews />
-      <TagClould />
+      {/* <TagClould /> */}
     </div>
+    
   )
 }
 
