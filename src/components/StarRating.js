@@ -1,29 +1,41 @@
-import React, {useState} from 'react';
-
+import React, { useState, useContext } from 'react';
+import { FaStar } from 'react-icons/fa';
+import { LanguageContext } from '../App';
+import en from '../languages/en';
+import ru from '../languages/ru';
 
 const StarRating = () => {
 
-  const [rating, setRating] = useState(0);
-  const [hover, setHover] = useState(0);
+  const language = useContext(LanguageContext);
+  const [rating, setRating] = useState(null);
+  const [hover, setHover] = useState(null);
+
+  const handleRating = (rate) => {
+    setRating(rate)
+  }
+
   return (
-    <div className="star-rating">
+    <div className='text-lg flex justify-center items-center'>
+      <span className='mr-4'>{language === 'en' ? en.yourRate : ru.yourRate}: </span>
       {[...Array(5)].map((star, index) => {
-        index += 1;
+        const currentRating = index + 1;
         return (
-          <button
-            type="button"
-            key={index}
-            className={index <= (hover || rating) ? "on" : "off"}
-            onClick={() => setRating(index)}
-            onMouseEnter={() => setHover(index)}
-            onMouseLeave={() => setHover(rating)}
-          >
-            <span className="star">&#9733;</span>
-          </button>
-        );
-      })}
+          <label key={index} >
+            <input className="hidden" type="radio" name="rating" value={currentRating} onClick={()=>handleRating(currentRating)}/>
+            <FaStar
+              className="cursor-pointer"
+              color={currentRating <= (hover || rating) ? "#ffc107" : "#e4e5e9"}
+              onMouseEnter={() => setHover(currentRating)}
+              onMouseLeave={() => setHover(null)}
+            />
+          </label>
+        )})
+      }
+      <button className='ml-4 bg-blue-500 w-24 p-1 rounded text-white text-sm hover:bg-blue-800'>
+        {language === 'en' ? en.submit : ru.submit}
+      </button>
     </div>
-  );
+  )
 };
 
 export default StarRating;

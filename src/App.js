@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import './App.css';
 import LoginPage from './pages/LoginPage';
 import AdminPage from './pages/AdminPage';
@@ -11,13 +11,21 @@ import CreateReviewPage from './pages/CreateReviewPage';
 import EditReviewPage from './pages/EditReviewPage';
 import ReviewPage from './pages/ReviewPage';
 import PageNotFound from './pages/PageNotFound';
+import BlockedUser from './pages/BlockedUser';
+import ReadModePage from './pages/ReadModePage';
+
+export const LanguageContext =  createContext();
 
 function App() {
-  const [user, setUser] = useState(null);
 
+  const SERVER_URI = process.env.REACT_APP_SERVER_URI;
+  const [currentUser, setCurrentUser] = useState();
+  const [language, setLanguage] = useState('en');
+  
   useEffect(() => {
-    const getUser = () => {
-      fetch("http://localhost:5000/auth/login/success", {
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      fetch(`${SERVER_URI}/auth/login/success`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -30,26 +38,46 @@ function App() {
         if(res.status === 200) return res.json();
         throw new Error("authentication has failed!");
       })
-      .then(resObj => setUser(resObj.user))
-      .catch(err => console.log(err));
+      .then(resObj => {
+        return fetch(`${SERVER_URI}/api/users/${resObj.user.id}`);
+      })
+      .then(response => response.json())
+      .then(data => {
+        setCurrentUser(data);
+        const userPreferLang = data.preferredLanguage;
+        setLanguage(userPreferLang);
+        localStorage.setItem("user", JSON.stringify(data));
+      })
+      .catch(err => {
+        console.error('Request failed', err)
+      })
+    } else {
+      const currentUser = JSON.parse(storedUser)
+      setCurrentUser(currentUser);
+      const userPreferLang = currentUser.preferredLanguage;
+      setLanguage(userPreferLang);
     }
-    getUser();
+
   }, []);
   
   return (
     <div className='w-screen h-screen'>
-      <Header user={user}/>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={user ? <Navigate to="/" /> : <LoginPage />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/create-review" element={<CreateReviewPage />} />
-        <Route path="/edit-review" element={<EditReviewPage />} />
-        <Route path="/user-page" element={<UserPage />} />
-        <Route path="/review" element={<ReviewPage />} />
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-      <Footer />
+      <LanguageContext.Provider value={language}>
+        <Header currentUser={currentUser} setLanguage={setLanguage} />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={currentUser ? <Navigate to="/" /> : <LoginPage />} />
+          <Route path="/admin" element={currentUser && currentUser.isAdmin ? <AdminPage /> : <Navigate to="/" />} />
+          <Route path="/create-review" element={currentUser ? <CreateReviewPage currentUser={currentUser}/> : <LoginPage />} />
+          <Route path="/edit-review" element={currentUser ? <EditReviewPage /> : <LoginPage />} />
+          <Route path="/user-page" element={currentUser ? <UserPage currentUser={currentUser}/> : <LoginPage />} />
+          <Route path="/review" element={<ReviewPage currentUser={currentUser}/>} />
+          <Route path="*" element={<PageNotFound />} />
+          <Route path="/blocked-user" element={<BlockedUser />} />
+          <Route path="/review/read-mode" element={<ReadModePage />} />
+        </Routes>
+        <Footer />
+      </LanguageContext.Provider>
     </div>
   );
 }

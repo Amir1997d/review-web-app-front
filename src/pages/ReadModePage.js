@@ -1,27 +1,20 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import StarRating from '../components/StarRating';
 import Comment from '../components/Comment';
 import { LanguageContext } from '../App';
 import en from '../languages/en';
 import ru from '../languages/ru';
-import io from 'socket.io-client';
 
-const ReviewPage = ({ currentUser }) => {
+
+const ReadModePage = () => {
 
     const SERVER_URI = process.env.REACT_APP_SERVER_URI;
-    const SOCKET_IO_URI = process.env.REACT_APP_SOCKET_IO_URI;
-    
+
     const language = useContext(LanguageContext);
     const [review, setReview] = useState({});
     const [comments, setComments] = useState([]);
-    const [commentInput, setCommentInput] = useState('');
     const [queryParameters] = useSearchParams()
     const reviewId = queryParameters.get("name");
-    
-    const socket = io(SOCKET_IO_URI, {
-        transports: ["websocket", "polling"]
-    });
 
     useEffect(() => {
         const urls = [`${SERVER_URI}/api/reviews/${reviewId}`, `${SERVER_URI}/api/comments/${reviewId}`];
@@ -37,41 +30,7 @@ const ReviewPage = ({ currentUser }) => {
         .catch((error) => {
             console.error("Error fetching data:", error);
         });
-
-        // socket.io get all comments and add new comments
-        socket.on('new-comment', (data) => {
-            setComments((prevComments) => [...prevComments, data]);
-        });
-        return () => {
-            socket.off('new-comment');
-        }
     }, []);
-
-    function addCommentHandler(e) {
-        e.preventDefault();
-        if(commentInput !== "") {
-            socket.emit("new-comment", { 
-                username: currentUser.username,
-                text: commentInput,
-                reviewId,
-                userId: currentUser.id 
-            });
-            setCommentInput('');
-        }
-    }
-
-    function likeHandler() {
-        const likeBtn = document.querySelector('#like-btn');
-        if (likeBtn.classList.contains('fa-regular')) {
-            likeBtn.classList.remove('fa-regular');
-            likeBtn.classList.add('fa-solid');
-        } else {
-            likeBtn.classList.remove('fa-solid');
-            likeBtn.classList.add('fa-regular');
-        }
-    }
-
-    const reviewLike = null;
 
     return (
         <div className='flex justify-center items-start dark:bg-slate-700 dark:text-white'>
@@ -128,47 +87,9 @@ const ReviewPage = ({ currentUser }) => {
                         {review.imgUrl === null ? <></> : <img  src={review?.imgUrl} alt="review" width="200px"/>}
                     </div>
                 </div>
-                <hr />
-
-                {/* review's rating and like section */}
-                {currentUser ? <div className='m-5 flex justify-between items-center'>
-                    <div className="flex">                        
-                        <StarRating userId={currentUser.id} reviewId={review.id}/>
-                    </div>
-                    {/* Like button */}
-                    <div>
-                        <span>{language === 'en' ? en.likeThisReview : ru.likeThisReview}: </span>
-                        { reviewLike === null 
-                            ? <i id="like-btn" className="fa-regular fa-thumbs-up ml-1 text-xl text-blue-500  hover:text-sky-400" onClick={likeHandler}></i>
-                            : reviewLike.map(like => {
-                                if(like.isLiked){
-                                    <i id="like-btn" className="fa-solid fa-thumbs-up ml-1 text-xl text-blue-500  hover:text-sky-400" onClick={likeHandler}></i>
-                                }
-                                else {
-                                    <i id="like-btn" className="fa-regular fa-thumbs-up ml-1 text-xl text-blue-500  hover:text-sky-400" onClick={likeHandler}></i>
-                                }})
-                        }
-                    </div>
-                </div> : <></>}
+                
                 <hr className='mb-4'/>
 
-                {/* comment form */}
-                {currentUser ? <form className='my-4 flex justify-between items-center'>
-                    <input 
-                        type="text" 
-                        placeholder={language === 'en' ? en.addComment : ru.addComment}
-                        onChange={e => setCommentInput(e.target.value)}
-                        value={commentInput}
-                        className='w-full mx-5 pl-4 rounded-md h-10 border-solid border-2 border-slate-400 focus:outline-none focus:border-yellow-500 focus:ring-yellow-500 focus:ring-1 dark:text-black'
-                    />
-                    <button 
-                        onClick={e => addCommentHandler(e)} 
-                        className='bg-yellow-400 w-32 p-2 rounded hover:bg-yellow-500'
-                    >
-                        {language === 'en' ? en.post : ru.post}
-                    </button>
-                </form> : <></>}
-                
                 {/* comment section */}
                 <h3 className='mx-5 font-bold text-lg'>{language === 'en' ? en.comments : ru.comments}</h3>
                 <div className='mx-5 my-5 flex flex-col justify-center items-start'>
@@ -181,4 +102,4 @@ const ReviewPage = ({ currentUser }) => {
     )
 }
 
-export default ReviewPage;
+export default ReadModePage;
