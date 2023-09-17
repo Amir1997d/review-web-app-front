@@ -34,7 +34,7 @@ const TopReviews = () => {
                                 <i className="fa-solid fa-star text-yellow-400"></i> 
                                 {review.avgRate === null 
                                     ? <sapn>{language === 'en' ? en.noRating : ru.noRating}</sapn> 
-                                    : <span>{review.avgRate} {language === 'en' ? en.outOf : ru.outOf}</span>
+                                    : <span>{review.avgRate} {language === 'en' ? en.outOf : ru.outOf} 5</span>
                                 }
                             </p>
                         </div>

@@ -33,7 +33,7 @@ const ReadModePage = () => {
     }, []);
 
     return (
-        <div className='flex justify-center items-start dark:bg-slate-700 dark:text-white'>
+        <div className='h-screen flex justify-center items-start dark:bg-slate-700 dark:text-white'>
             <div className='w-full mx-24 my-10 rounded-lg'>
                 <div>
                     {/* title */}

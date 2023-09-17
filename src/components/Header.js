@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../images/logo.png';
 import { LanguageContext } from '../App';
 import en from '../languages/en';
@@ -10,6 +10,7 @@ const Header = ({ currentUser, setLanguage }) => {
   const SERVER_URI = process.env.REACT_APP_SERVER_URI;
   
   const language = useContext(LanguageContext);
+  const navigate = useNavigate();
 
   function logout() {
     window.open(`${SERVER_URI}/auth/logout`, "_self");
@@ -47,6 +48,16 @@ const Header = ({ currentUser, setLanguage }) => {
     }
   }
 
+  function openUserPage() {
+    const htmlElement = document.querySelector('html');
+    const hasDarkTheme = htmlElement.classList.contains('dark');
+    navigate(`/user-page/?type=userid&name=${currentUser.id}`);
+    navigate(0);
+    if(hasDarkTheme) {
+      htmlElement.classList.add('dark');
+    }
+  }
+
   return (
     <div className='w-screen h-20 flex items-center justify-between bg-yellow-400 dark:bg-slate-500'>
       <div className='p-2 ml-5 cursor-pointer'>
@@ -73,8 +84,8 @@ const Header = ({ currentUser, setLanguage }) => {
         <select
           className='mr-5 rounded bg-red-500 text-white'
           value={language}
-          // defaultValue={{ label: language === 'en' ? "EN" : "RU", value: language }}
           onChange={(e) => languageSelectorHandler(e)}
+          title="language"
         >
           <option value="en">EN</option>
           <option value="ru">RU</option>
@@ -82,7 +93,7 @@ const Header = ({ currentUser, setLanguage }) => {
 
         {currentUser ? <></> : <button title="Log in"><Link to="/login"><i className="fa-solid fa-right-to-bracket text-red-500 mr-5 hover:text-black"></i></Link></button>}
         {currentUser ? <button title="Log out" onClick={logout}><i className="fa-solid fa-right-from-bracket text-red-500 mr-5 hover:text-black"></i></button> : <></>}
-        {currentUser ? <button title="User Page"><Link to="/user-page"><i className="fa-solid fa-user text-red-500 mr-5 hover:text-black"></i></Link></button> : <></> }
+        {currentUser ? <button title="User Page" onClick={openUserPage}><i className="fa-solid fa-user text-red-500 mr-5 hover:text-black"></i></button> : <></> }
         <button title="Home"><Link to="/"><i className="fa-solid fa-house text-red-500 mr-5 hover:text-black"></i></Link></button>
       </div>
     </div>

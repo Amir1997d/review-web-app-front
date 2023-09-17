@@ -5,7 +5,7 @@ const AdminTableItem = ({ user, users, setUsers }) => {
 
   const SERVER_URI = process.env.REACT_APP_SERVER_URI;
   const navigate = useNavigate();
-  const [userStatus, setUserStatus] = useState(user.isBlocked ? "unblock" : "block");
+  const [userStatus, setUserStatus] = useState(user.isBlocked ? "blocked" : "active");
   const [userRole, setUserRole] = useState(user.isAdmin ? "admin" : "non-admin");
 
   function deleteHandler(id) {
@@ -33,10 +33,18 @@ const AdminTableItem = ({ user, users, setUsers }) => {
       },
       body: JSON.stringify({
         userId: id,
-        isBlocked: !user.isBlocked
+        userStatus: !user.isBlocked
       })
     })
-    // setUserStatus(isBlocked ? "unblock" : "block")
+    .then(response => {
+      if (response.ok) {
+        user = { ...user, isBlocked: !user.isBlocked };
+        setUserStatus(user.isBlocked ? 'blocked' : 'active');
+      }
+    })
+    .catch(error => {
+      console.error('Error updating user status:', error);
+    });
   }
 
   function roleHandler(id) {
@@ -47,12 +55,18 @@ const AdminTableItem = ({ user, users, setUsers }) => {
       },
       body: JSON.stringify({
         userId: id,
-        isAdmin: !user.isAdmin 
+        userRole: !user.isAdmin
       })
     })
-    .then(res => res.json())
-    .then((data) => setUserRole(data.role ? "admin" : "non-admin"))
-    .catch(err => console.log(err));
+    .then(response => {
+      if (response.ok) {
+        user = { ...user, isAdmin: !user.isAdmin };
+        setUserRole(user.isAdmin ? 'admin' : 'non-admin');
+      }
+    })
+    .catch(error => {
+      console.error('Error updating user role:', error);
+    });
   }
 
   function viewHandler(userId) {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import UserTableItem from '../components/UserTableItem';
 import { LanguageContext } from '../App';
 import en from '../languages/en';
@@ -11,9 +11,11 @@ const UserPage = ({ currentUser }) => {
     const SERVER_URI = process.env.REACT_APP_SERVER_URI;
     const language = useContext(LanguageContext);
     const [reviews, setReviews] = useState([]);
+    const [queryParameters] = useSearchParams()
+    const userId = queryParameters.get("name");
   
     useEffect(() => {
-        fetch(`${SERVER_URI}/api/reviews/user-reviews/${currentUser.id}`)
+        fetch(`${SERVER_URI}/api/reviews/user-reviews/${userId}`)
         .then(res => res.json())
         .then(data => setReviews(data));
     }, []);  
@@ -52,7 +54,7 @@ const UserPage = ({ currentUser }) => {
                     </select>
                 </div>
                 <button className='py-2 px-4 bg-green-600 hover:bg-green-800 text-white rounded'>
-                    <Link to="/create-review">
+                    <Link to={`/create-review/?type=userid&name=${userId}`}>
                         {language === 'en' ? en.createReview : ru.createReview}
                     </Link>
                 </button>

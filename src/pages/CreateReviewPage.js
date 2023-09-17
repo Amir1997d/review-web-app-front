@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { uploadFile, dropHandler } from '../helpers/uploadImageHelper';
 import { handleSuggestionClick, handleInputChange, extractTags } from '../helpers/tagHelpers';
 import { LanguageContext } from '../App';
@@ -11,6 +11,9 @@ import UploadImage from '../components/UploadImage';
 const CreateReviewPage = ({ currentUser }) => {
 
   const SERVER_URI = process.env.REACT_APP_SERVER_URI;
+
+  const [queryParameters] = useSearchParams()
+  const userIdFromUri = queryParameters.get("name");
 
   const language = useContext(LanguageContext);
   const navigate = useNavigate();
@@ -40,7 +43,10 @@ const CreateReviewPage = ({ currentUser }) => {
       }))
       .then((results) => {
         setGroups(results[0]);
-        setTagsArray(results[1]);
+        const tags = results[1].map(tag => tag.name);
+        console.log(tags);
+        const uniqueTags = Array.from(new Set(tags));
+        setTagsArray(uniqueTags);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -64,10 +70,10 @@ const CreateReviewPage = ({ currentUser }) => {
         avgRate: null,
         author: currentUser.username,
         tags,
-        userId: currentUser.id
+        userId: userIdFromUri
       })
     })
-    navigate("/user-page");
+    navigate(`/user-page/?type=userid&name=${userIdFromUri}`);
   }
 
   const handleFileChange = (e) => {

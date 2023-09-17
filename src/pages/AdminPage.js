@@ -12,7 +12,7 @@ const AdminPage = () => {
     .then(data => {
       setUsers(data)
     })
-    .catch(err => console.log(err))
+    .catch((err) => console.log(err))
   }, []);
 
   return (
@@ -24,7 +24,7 @@ const AdminPage = () => {
             <th className='p-3 bg-yellow-400 dark:bg-red-500'>Id</th>
             <th className='p-3 bg-yellow-400 dark:bg-red-500'>Username</th>
             <th className='p-3 bg-yellow-400 dark:bg-red-500'>View Page</th>
-            <th className='p-3 bg-yellow-400 dark:bg-red-500'>Block/Unblock User</th>
+            <th className='p-3 bg-yellow-400 dark:bg-red-500'>User Status</th>
             <th className='p-3 bg-yellow-400 dark:bg-red-500'>User Role</th>
             <th className='p-3 bg-yellow-400 dark:bg-red-500'>Delete User</th>
           </tr>
