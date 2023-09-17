@@ -62,7 +62,7 @@ const Header = ({ currentUser, setLanguage }) => {
         <button type='submit' title="search" className='ml-1 bg-red-500 w-8 h-8 hover:bg-black border-re rounded-lg'><i className="fa-solid fa-magnifying-glass text-white"></i></button>
       </form>
       <div className='btn-div'>
-        { currentUser && currentUser?.isAdmin 
+        { currentUser  
           ? <button title="admin page" id="theme-btn">
             <Link to="/admin">
               <i className="fa-solid fa-user-gear text-red-500 mr-5 hover:text-black"></i>

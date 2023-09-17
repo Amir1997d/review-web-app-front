@@ -67,7 +67,8 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={currentUser ? <Navigate to="/" /> : <LoginPage />} />
-          <Route path="/admin" element={currentUser && currentUser.isAdmin ? <AdminPage /> : <Navigate to="/" />} />
+          {/* <Route path="/admin" element={currentUser && currentUser.isAdmin ? <AdminPage /> : <Navigate to="/" />} /> */}
+          <Route path="/admin" element={currentUser ? <AdminPage /> : <Navigate to="/" />} />
           <Route path="/create-review" element={currentUser ? <CreateReviewPage currentUser={currentUser}/> : <LoginPage />} />
           <Route path="/edit-review" element={currentUser ? <EditReviewPage /> : <LoginPage />} />
           <Route path="/user-page" element={currentUser ? <UserPage currentUser={currentUser}/> : <LoginPage />} />

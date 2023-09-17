@@ -3,7 +3,6 @@ import AdminTableItem from '../components/AdminTableItem';
 
 
 const AdminPage = () => {
-  
   const SERVER_URI = process.env.REACT_APP_SERVER_URI;
   const [users, setUsers] = useState([]);
 
@@ -31,7 +30,12 @@ const AdminPage = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map(user => <AdminTableItem key={user.id} user={user} />)}
+          {users.map(user => <AdminTableItem 
+                                key={user.id} 
+                                user={user} 
+                                users={users}
+                                setUsers={setUsers}
+                                />)}
         </tbody>
       </table>
     </div> 
