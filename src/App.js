@@ -13,6 +13,8 @@ import ReviewPage from './pages/ReviewPage';
 import PageNotFound from './pages/PageNotFound';
 import BlockedUser from './pages/BlockedUser';
 import ReadModePage from './pages/ReadModePage';
+import TagResultPage from './pages/TagResultPage';
+import SearchResultPage from './pages/SearchResultPage';
 
 export const LanguageContext =  createContext();
 
@@ -57,7 +59,6 @@ function App() {
       const userPreferLang = currentUser.preferredLanguage;
       setLanguage(userPreferLang);
     }
-
   }, []);
   
   return (
@@ -76,6 +77,8 @@ function App() {
           <Route path="*" element={<PageNotFound />} />
           <Route path="/blocked-user" element={<BlockedUser />} />
           <Route path="/review/read-mode" element={<ReadModePage />} />
+          <Route path="/tag-search" element={<TagResultPage />} />
+          <Route path="/search" element={<SearchResultPage />} />
         </Routes>
         <Footer />
       </LanguageContext.Provider>

@@ -24,7 +24,7 @@ const RecentlyReviews = () => {
 
     return (
         <div className='w-full m-2'>
-            <h1 className='mb-2 dark:text-white'>{language === 'en' ? en.recentlyReviews : ru.recentlyReviews}</h1>
+            <h2 className='mb-2 dark:text-white'>{language === 'en' ? en.recentlyReviews : ru.recentlyReviews}</h2>
             <div className='w-full min-h-full p-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded'>
             {recentlyReviews?.length === 0 ? <p>no review</p> : recentlyReviews?.map((review, index) => {
                 return (
@@ -34,7 +34,7 @@ const RecentlyReviews = () => {
                             <p>{language === 'en' ? en.avgRating : ru.avgRating} :
                                 <i className="fa-solid fa-star text-yellow-400"></i> 
                                 {review.avgRate === null 
-                                    ? <sapn>{language === 'en' ? en.noRating : ru.noRating}</sapn> 
+                                    ? <span>{language === 'en' ? en.noRating : ru.noRating}</span> 
                                     : <span>{review.avgRate} {language === 'en' ? en.outOf : ru.outOf} 5</span>
                                 }
                             </p>

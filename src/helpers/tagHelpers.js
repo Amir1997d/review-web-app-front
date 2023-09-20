@@ -25,21 +25,25 @@ export const handleSuggestionClick = (suggestion, setTagInput, setSuggestions) =
 
 export const handleInputChange = (e, setTagInput, tagsArray, setSuggestions) => {
     const inputText = e.target.value;
-    const filteredTags = tagsArray.filter(tagObj => tagObj.name.startsWith(inputText[1])).map(tagObj => tagObj.name);
+    const filteredTags = tagsArray.filter(tag => tag.startsWith(inputText[1]));
     setSuggestions(filteredTags);
     setTagInput(inputText);
 }
 
-// export const uploadTags = (tagsString, idForTags) => {
-//   const tagsArray = extractTags(tagsString);
-//   fetch(`${process.env.REACT_APP_SERVER_URI}/api/tags/add-tags`, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({
-//       tagsArray, 
-//       tagReviewId: idForTags,
-//     })
-//   })
-// }
+export const uploadTags = (tagsString, idForTags) => {
+  const tagsArray = extractTags(tagsString);
+  fetch(`${process.env.REACT_APP_SERVER_URI}/api/tags/add-tags`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      tagsArray, 
+      tagReviewId: idForTags,
+    })
+  })
+}
+
+export function tagOnClickHandler(tagName, navigate) {
+  navigate(`/tag-search/?tag=${tagName}`);
+}

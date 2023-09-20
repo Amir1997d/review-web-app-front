@@ -1,23 +1,31 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import Comment from '../components/Comment';
 import { LanguageContext } from '../App';
 import en from '../languages/en';
 import ru from '../languages/ru';
+import { tagOnClickHandler } from '../helpers/tagHelpers';
+import MDEditor from '@uiw/react-md-editor';
 
 
 const ReadModePage = () => {
 
     const SERVER_URI = process.env.REACT_APP_SERVER_URI;
 
+    const navigate = useNavigate();
     const language = useContext(LanguageContext);
     const [review, setReview] = useState({});
     const [comments, setComments] = useState([]);
+    const [sumOfLikes, setSumOfLikes] = useState(0);
     const [queryParameters] = useSearchParams()
     const reviewId = queryParameters.get("name");
 
     useEffect(() => {
-        const urls = [`${SERVER_URI}/api/reviews/${reviewId}`, `${SERVER_URI}/api/comments/${reviewId}`];
+        const urls = [
+            `${SERVER_URI}/api/reviews/${reviewId}`, 
+            `${SERVER_URI}/api/comments/${reviewId}`,
+            `${SERVER_URI}/api/likes/${reviewId}`
+        ];
         Promise.all(
         urls.map(async (url) => {
             const res = await fetch(url);
@@ -26,6 +34,7 @@ const ReadModePage = () => {
         .then((results) => {
             setReview(results[0]);
             setComments(results[1]);
+            setSumOfLikes(results[2].count);
         })
         .catch((error) => {
             console.error("Error fetching data:", error);
@@ -42,7 +51,7 @@ const ReadModePage = () => {
                         <div className='ml-5 flex items-center'>
                             <i className="fa-solid fa-star text-yellow-400 text-sm"></i>
                             {review.avgRate === null 
-                                ? <sapn className='text-slate-500 ml-2'>{language === 'en' ? en.noRating : ru.noRating}</sapn> 
+                                ? <span className='text-slate-500 ml-2'>{language === 'en' ? en.noRating : ru.noRating}</span> 
                                 : <span className='text-sm ml-1 text-slate-500 dark:text-slate-300'>{review.avgRate} {language === 'en' ? en.outOf : ru.outOf} 5</span>
                             }
                         </div>
@@ -54,7 +63,8 @@ const ReadModePage = () => {
                         <h2 className='mb-2'>
                             <span className='font-bold mr-1'>{language === 'en' ? en.author : ru.author}: </span>
                             {review?.author}<span className='ml-5'>
-                                <i className="fa-solid fa-thumbs-up text-blue-600"></i> 3340
+                                <i className="mr-2 fa-solid fa-thumbs-up text-blue-600"></i> 
+                                {sumOfLikes} 
                             </span>
                         </h2>
                         <h2 className='mb-2'>
@@ -74,12 +84,12 @@ const ReadModePage = () => {
 
                     {/* review's text */}
                     <div className='m-5'>
-                        <p>{review?.text}</p>
+                        <MDEditor.Markdown source={review?.text} />
                     </div>
 
                     {/* review's tags */}
                     <div className='m-5 text-blue-800 dark:text-blue-400'>
-                        {review?.tags?.map((tag, index) => <span key={index}>#{tag.name} </span>)}
+                        {review?.tags?.map((tag, index) => <span className="hover:text-yellow-500 cursor-pointer" key={index} onClick={()=>tagOnClickHandler(tag.name, navigate)}>#{tag.name} </span>)}
                     </div>
 
                     {/* review's image */}

@@ -23,7 +23,7 @@ const TopReviews = () => {
 
     return (
         <div className='w-full m-2'>
-            <h1 className='mb-2 dark:text-white'>{language === 'en' ? en.topReviews : ru.topReviews}</h1>
+            <h2 className='mb-2 dark:text-white'>{language === 'en' ? en.topReviews : ru.topReviews}</h2>
             <div className='w-full min-h-full p-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded'>
             {topReviews?.length === 0 ? <p>no review</p> : topReviews?.map((review, index) => {
                 return (

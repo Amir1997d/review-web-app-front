@@ -1,17 +1,58 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { FaStar } from 'react-icons/fa';
 import { LanguageContext } from '../App';
 import en from '../languages/en';
 import ru from '../languages/ru';
 
-const StarRating = () => {
+const StarRating = ({userId, reviewId, setReviewAvgRate}) => {
 
+  const SERVER_URI = process.env.REACT_APP_SERVER_URI;
   const language = useContext(LanguageContext);
-  const [rating, setRating] = useState(null);
+  const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(null);
+  const [alreadyRated, setAlreadyRated] = useState(false);
+
+  useEffect(() => {
+    fetch(`${SERVER_URI}/api/ratings/get-rating`, {
+      method: "POST", 
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        reviewId,
+        userId,
+      })
+    })
+    .then((res => {
+      if(res.ok) {
+        setAlreadyRated(true);
+      }
+    }))
+    .catch((err) => console.log(err));
+  }, []);
 
   const handleRating = (rate) => {
     setRating(rate)
+  }
+
+  function ratingHandler() {
+    fetch(`${SERVER_URI}/api/ratings/add-rating`, {
+      method: "POST", 
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        rating: rating,
+        reviewId,
+        userId,
+      })
+    })
+    .then(()=> {
+      return fetch(`${SERVER_URI}/api/ratings/get-avg-rating/${reviewId}`)
+    })
+    .then(res => res.json())
+    .then(data => setReviewAvgRate(data.avgRate));
+    setAlreadyRated(true);
   }
 
   return (
@@ -31,7 +72,9 @@ const StarRating = () => {
           </label>
         )})
       }
-      <button className='ml-4 bg-blue-500 w-24 p-1 rounded text-white text-sm hover:bg-blue-800'>
+      <button onClick={ratingHandler} disabled={alreadyRated} 
+        className='ml-4 bg-blue-500 w-24 p-1 rounded text-white text-sm hover:bg-blue-800 disabled:bg-slate-400'
+        >
         {language === 'en' ? en.submit : ru.submit}
       </button>
     </div>
