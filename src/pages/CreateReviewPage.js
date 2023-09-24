@@ -53,7 +53,8 @@ const CreateReviewPage = ({ currentUser }) => {
       });
   }, []);
  
-  function addReviewHandler() {
+  function addReviewHandler(e) {
+    e.preventDefault();
     if(!name || !reviewedItemName || !text) {
       window.alert('Please fill in all required fields!');
       return;
@@ -80,9 +81,11 @@ const CreateReviewPage = ({ currentUser }) => {
         })
       })
     })
+    .then(() => {
+    	navigate(`/user-page/?type=userid&name=${userIdFromUri}`);
+    	navigate(0);
+    	})
     .catch(err => console.error(err));
-    navigate(`/user-page/?type=userid&name=${userIdFromUri}`);
-    navigate(0);
   }
 
   const handleChange = (file) => {
@@ -117,7 +120,7 @@ const CreateReviewPage = ({ currentUser }) => {
   return (
     <div className='w-screen min-h-screen dark:bg-slate-800 dark:text-white flex flex-col justify-start items-center'>
         <h1 className='m-10 font-bold text-xl'>{language === 'en' ? en.createReview : ru.createReview}</h1>
-        <form className='w-1/2 min-h-full mb-10 p-10 rounded-lg flex flex-col bg-gradient-to-r from-violet-500 to-fuchsia-500'>
+        <form className='w-3/4 min-h-full mb-10 p-10 rounded-lg flex flex-col bg-gradient-to-t from-violet-500 to-fuchsia-500'>
 
             {/*-------- review title input -------*/}
             <label className=''>{language === 'en' ? en.reviewName : ru.reviewName}:</label>
@@ -144,10 +147,10 @@ const CreateReviewPage = ({ currentUser }) => {
                   value={tagInput} 
                   onChange={(e)=>handleInputChange(e, setTagInput, tagsArray, setSuggestions)}
                 />
-                <button className='w-28 h-10 rounded bg-white dark:text-black hover:bg-slate-200' onClick={addTagHandler}>
+                <button className='w-28 h-10 m-1 rounded bg-blue-600 text-xs lg:text-base hover:bg-sky-400' onClick={addTagHandler}>
                   {language === 'en' ? en.addTag : ru.addTag}
                 </button>
-                <button className='w-28 h-10 rounded bg-white dark:text-black hover:bg-slate-200' onClick={(e)=>resetTagTextArea(e)}>
+                <button className='w-28 h-10 m-1 rounded bg-blue-600 text-xs lg:text-base hover:bg-sky-400' onClick={(e)=>resetTagTextArea(e)}>
                  {language === 'en' ? en.deleteTags : ru.deleteTags}
                 </button>
               </div>
@@ -178,16 +181,18 @@ const CreateReviewPage = ({ currentUser }) => {
 
             {/*-------- upload image -------*/}
             <label className='mt-4 mb-2'>{language === 'en' ? en.image : ru.image}:</label>
-            <FileUploader handleChange={handleChange} name="file" types={fileTypes} />
-            <div className='my-2 flex justify-between items-center'>
-              <p>{language==='en' ? en.uploaded : ru.uploaded} {progress}%</p>
-              <button 
-                  className="w-1/2 p-2 bg-slate-200 rounded hover:bg-slate-300 dark:text-black" 
+            <div className="flex flex-col md:flex-row justify-between">
+            	<FileUploader handleChange={handleChange} name="file" types={fileTypes} />
+            	<button 
+                  className="w-1/2 md:w-1/3 my-4 md:mx-2 md:my-0 p-2 bg-blue-600 rounded hover:bg-sky-400 dark:text-white" 
                   onClick={uploadImgHandler}
               >
                 {language==='en' ? en.uploadImage : ru.uploadImage}
               </button>
             </div>
+            <div className='my-2 flex justify-between items-center'>
+              <p>{language==='en' ? en.uploaded : ru.uploaded} {progress}%</p>
+            </div> 
 
             {/*-------- rating slider -------*/}
             <label className='mt-8'>
@@ -198,7 +203,7 @@ const CreateReviewPage = ({ currentUser }) => {
             
             <button 
               type="submit" 
-              className='h-10 mt-12 rounded text-white bg-red-600 hover:bg-yellow-500 hover:text-white' 
+              className='h-10 mt-12 rounded text-white bg-green-600 hover:bg-green-400 hover:text-white' 
               onClick={(e)=>addReviewHandler(e)}
             >
               {language==='en' ? en.create : ru.create}

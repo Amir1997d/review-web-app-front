@@ -73,15 +73,17 @@ const Header = ({ currentUser, setLanguage }) => {
   return (
     <div className='w-screen h-20 flex items-center justify-between bg-yellow-400 dark:bg-slate-500'>
       {/* logo */}
-      <div className='p-2 ml-5 cursor-pointer'>
+      <div className='p-2 ml-5 cursor-pointer hidden md:block sm:hidden'>
         <Link to="/">
           <img src={logo} alt='logo' width="100px" title="Reviwer"/>
         </Link>
       </div>
 
+
+
       {/* username */}
       <div>
-        {currentUser ? <span className='mr-8 text-red-600 dark:text-white'>{currentUser.username}</span> : <></> }
+        {currentUser ? <span className='mr-8 text-red-600 dark:text-white hidden md:block sm:hidden'>{currentUser.username.split(' ')[0]}</span> : <></> }
       </div>
 
       {/* search bar */}
@@ -89,7 +91,7 @@ const Header = ({ currentUser, setLanguage }) => {
         <input 
           type="text" 
           placeholder={language === 'en' ? en.search : ru.search} 
-          className='pl-3 rounded-md h-8 w-80 focus:outline-none focus:border-red-500 focus:ring-red-500 focus:ring-1'
+          className='pl-3 rounded-md h-8 md:w-80 sm:w-70 focus:outline-none focus:border-red-500 focus:ring-red-500 focus:ring-1'
           value={searchInput}
           onChange={(e)=>setSearchInput(e.target.value)}
         />
@@ -104,8 +106,32 @@ const Header = ({ currentUser, setLanguage }) => {
       </form>
 
       {/* rightside controllers and buttons */}
-      <div className='btn-div'>
+      <div className='sm: hidden'>
         { currentUser  
+          ? <button title="admin page" id="theme-btn">
+            <Link to="/admin">
+              <i className="fa-solid fa-user-gear text-red-500 mr-5 hover:text-black"></i>
+            </Link>
+          </button> 
+          : <></> }
+        <button title="dark/light" id="theme-btn" onClick={themeHandler}><i className="fa-solid fa-circle-half-stroke text-red-500 mr-5 hover:text-black"></i></button>
+        <select
+          className='mr-5 rounded bg-red-500 text-white'
+          value={language}
+          onChange={(e) => languageSelectorHandler(e)}
+          title="language"
+        >
+          <option value="en">EN</option>
+          <option value="ru">RU</option>
+        </select>
+        {currentUser ? <></> : <button title="Log in"><Link to="/login"><i className="fa-solid fa-right-to-bracket text-red-500 mr-5 hover:text-black"></i></Link></button>}
+        {currentUser ? <button title="Log out" onClick={logout}><i className="fa-solid fa-right-from-bracket text-red-500 mr-5 hover:text-black"></i></button> : <></>}
+        {currentUser ? <button title="User Page" onClick={openUserPage}><i className="fa-solid fa-user text-red-500 mr-5 hover:text-black"></i></button> : <></> }
+        <button title="Home"><Link to="/"><i className="fa-solid fa-house text-red-500 mr-5 hover:text-black"></i></Link></button>
+      </div>
+      {/* bottom buttons section for small screen width */}
+      <div className='btn-div sm: sticky bottom-0'>
+        { currentUser && currentUser.isAdmin 
           ? <button title="admin page" id="theme-btn">
             <Link to="/admin">
               <i className="fa-solid fa-user-gear text-red-500 mr-5 hover:text-black"></i>

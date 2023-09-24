@@ -168,7 +168,7 @@ const ReviewPage = ({ currentUser }) => {
 
                     {/* review's text */}
                     <div className='m-5'>
-                        <MDEditor.Markdown source={review?.text} />
+                        <MDEditor.Markdown source={review?.text} className="dark:text-white dark:bg-slate-700"/>
                     </div>
 
                     {/* review's tags */}
@@ -184,12 +184,12 @@ const ReviewPage = ({ currentUser }) => {
                 <hr />
 
                 {/* review's rating and like section */}
-                {currentUser ? <div className='m-5 flex justify-between items-center'>
+                {currentUser ? <div className='m-5 flex flex-col md:flex-row justify-between items-center'>
                     <div className="flex">                        
                         <StarRating userId={currentUser.id} reviewId={reviewId} setReviewAvgRate={setReviewAvgRate}/>
                     </div>
                     {/* Like button */}
-                    <div>
+                    <div className="mt-4 md:mt-0">
                         <span>{language === 'en' ? en.likeThisReview : ru.likeThisReview}: </span>
                         { isLiked 
                             ? <i id="like-btn" 

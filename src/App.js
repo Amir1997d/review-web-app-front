@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { createContext, useEffect, useState } from 'react';
 import './App.css';
 import LoginPage from './pages/LoginPage';
@@ -23,6 +23,7 @@ function App() {
   const SERVER_URI = process.env.REACT_APP_SERVER_URI;
   const [currentUser, setCurrentUser] = useState();
   const [language, setLanguage] = useState('en');
+  const navigate = useNavigate();
   
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -68,11 +69,10 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={currentUser ? <Navigate to="/" /> : <LoginPage />} />
-          {/* <Route path="/admin" element={currentUser && currentUser.isAdmin ? <AdminPage /> : <Navigate to="/" />} /> */}
-          <Route path="/admin" element={currentUser ? <AdminPage /> : <Navigate to="/" />} />
+          <Route path="/admin" element={currentUser && currentUser.isAdmin ? currentUser.isBlocked ? <Navigate to="/blocked-user"/> : <AdminPage /> : <Navigate to="/" />} />
           <Route path="/create-review" element={currentUser ? <CreateReviewPage currentUser={currentUser}/> : <LoginPage />} />
           <Route path="/edit-review" element={currentUser ? <EditReviewPage /> : <LoginPage />} />
-          <Route path="/user-page" element={currentUser ? <UserPage currentUser={currentUser}/> : <LoginPage />} />
+          <Route path="/user-page" element={currentUser ? currentUser.isBlocked ? <Navigate to="/blocked-user"/> : <UserPage currentUser={currentUser}/> : <LoginPage />} />
           <Route path="/review" element={<ReviewPage currentUser={currentUser}/>} />
           <Route path="*" element={<PageNotFound />} />
           <Route path="/blocked-user" element={<BlockedUser />} />

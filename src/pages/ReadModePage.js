@@ -84,7 +84,7 @@ const ReadModePage = () => {
 
                     {/* review's text */}
                     <div className='m-5'>
-                        <MDEditor.Markdown source={review?.text} />
+                        <MDEditor.Markdown source={review?.text} className="dark:text-white dark:bg-slate-700"/>
                     </div>
 
                     {/* review's tags */}

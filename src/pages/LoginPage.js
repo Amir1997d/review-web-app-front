@@ -17,7 +17,7 @@ const LoginPage = () => {
   }
 
   return (
-    <div className='w-screen h-full dark:bg-slate-800 flex items-center justify-center'>
+    <div className='w-screen min-h-full dark:bg-slate-800 flex items-center justify-center'>
       <div className='w-80 h-96 p-10 m-10 bg-gradient-to-r from-violet-500 to-fuchsia-500 flex flex-col justify-evenly items-center rounded-lg'>
         <div className='flex flex-col justify-center items-center'>
           <h2 className='text-xl my-2 font-bold text-black text-center dark:text-white'>{language === 'en' ? en.sign : ru.sign} </h2>

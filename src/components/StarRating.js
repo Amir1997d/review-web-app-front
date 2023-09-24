@@ -57,7 +57,7 @@ const StarRating = ({userId, reviewId, setReviewAvgRate}) => {
 
   return (
     <div className='text-lg flex justify-center items-center'>
-      <span className='mr-4'>{language === 'en' ? en.yourRate : ru.yourRate}: </span>
+      {/*<span className='mr-4'>{language === 'en' ? en.yourRate : ru.yourRate}: </span>*/}
       {[...Array(5)].map((star, index) => {
         const currentRating = index + 1;
         return (
