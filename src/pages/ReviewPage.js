@@ -184,7 +184,7 @@ const ReviewPage = ({ currentUser }) => {
                 <hr />
 
                 {/* review's rating and like section */}
-                {currentUser ? <div className='m-5 flex flex-col md:flex-row justify-between items-center'>
+                {currentUser && !currentUser.isBloked ? <div className='m-5 flex flex-col md:flex-row justify-between items-center'>
                     <div className="flex">                        
                         <StarRating userId={currentUser.id} reviewId={reviewId} setReviewAvgRate={setReviewAvgRate}/>
                     </div>
@@ -204,7 +204,7 @@ const ReviewPage = ({ currentUser }) => {
                 <hr className='mb-4'/>
 
                 {/* comment form */}
-                {currentUser ? <form className='my-4 flex justify-between items-center'>
+                {currentUser && !currentUser.isBloked ? <form className='my-4 flex justify-between items-center'>
                     <input 
                         type="text" 
                         placeholder={language === 'en' ? en.addComment : ru.addComment}
